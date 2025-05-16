@@ -41,7 +41,7 @@ const Home = () => {
                   </p>
                   <h1 className=" mb-6 leading-tight tracking-wide  text-[#1F2B6C] leading-text ">
                     Leading the Way <br className="hidden md:block " />
-                    in Medical Excellence dsafjkl;dsaf
+                    in Medical Excellence
                   </h1>
 
                   <Link
