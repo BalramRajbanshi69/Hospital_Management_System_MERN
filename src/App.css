@@ -1,0 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Work+Sans:ital,wght@0,100..900;1,100..900&family=Yeseva+One&display=swap');
+.meddical-text {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem;
+  font-weight: 700
+}
+
+.header-text{
+font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-style: normal;
+}
+
+.leading-text{
+  font-family: "Yeseva One", sans-serif;
+  font-size: 45.5px;
+  font-weight: 400;
+  line-height: 100%;
+}
+
+.second-text{
+  font-family: "Yeseva One", sans-serif;
+  /* font-size: 1.8rem; */
+  font-size: 32px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  font-weight: 400;
+}
+
+.appointment-text{
+   font-family: "Playfair Display", sans-serif;
+  font-size: 1.8rem;
+}
+
+
+.about-us{
+    font-family: "Yeseva One", sans-serif;
+  /* font-size: 1.8rem; */
+  font-size: 48px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  font-weight: 400;
+}
+
+.meddical-text-footer{
+   font-family: "Yeseva One", sans-serif;
+  /* font-size: 1.8rem; */
+  font-size: 36px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  font-weight: 400;
+}
+
+
+.post-paragraph{
+  font-family: "Yeseva One", sans-serif;
+  /* font-size: 1.8rem; */
+  font-size: 32px;
+  font-weight: 400;
+  color: #1F2B6C;
+  line-height: 100%;
+}
+
+.emergency{
+  /* font-family: "Playfair Display", sans-serif; */
+  /* font-size: 1.8rem; */
+  font-size: 26px;
+    font-weight: 500;
+    color: #FCFEFE;
+    
+}
+
+.number-schedule{
+    font-size: 26px;
+    font-weight: 500;
+    color:#BFD2F8;
+}
+
+.days-schedule{
+  font-size: 18px;
+  color: #FCFEFE;
+}
