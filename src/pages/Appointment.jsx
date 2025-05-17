@@ -1,13 +1,192 @@
-import React from "react";
+import React, { useState } from "react";
 import AppointmentPic from "../../src/assets/DoctorsAppointment.jpg";
 import { IoIosArrowDown, IoLogoInstagram } from "react-icons/io";
 import Map from "../../src/assets/map.jpg";
 import { FaClock, FaLocationArrow, FaMapMarkerAlt } from "react-icons/fa";
 import { MdOutlineMail } from "react-icons/md";
 import { TiSocialFacebook, TiSocialLinkedin } from "react-icons/ti";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const Appointment = () => {
+  const apiUrl = import.meta.env.VITE_REACT_API_URL;
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    gender: "",
+    date: "",
+    time: "",
+    doctor: "",
+    department: "",
+    message: "",
+  });
+
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+
+  const timeSlots = [
+    "9:00AM",
+    "10:00AM",
+    "11:00AM",
+    "12:00PM",
+    "1:00PM",
+    "2:00PM",
+    "3:00PM",
+    "4:00PM",
+    "5:00PM",
+    "6:00PM",
+    "7:00PM",
+  ];
+
+  const validateForm = () => {
+    const newErrors = {};
+    // Name validation - at least 3 characters
+    if (!formData.name.trim()) {
+      newErrors.name = "Name is required";
+    } else if (formData.name.trim().length < 3) {
+      newErrors.name = "Name must be at least 3 characters";
+    }
+
+    if (!formData.email) {
+      newErrors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Email is invalid";
+    }
+
+    // Phone validation - must start with 98 and be 10 digits
+    if (!formData.phone) {
+      newErrors.phone = "Phone number is required";
+    } else if (!/^(98|97)\d{8}$/.test(formData.phone)) {
+      newErrors.phone =
+        "Phone number must start with 98 or 97 and be 10 digits";
+    }
+
+    if (!formData.gender) newErrors.gender = "Gender is required";
+    if (!formData.date) newErrors.date = "Date is required";
+    if (!formData.time) newErrors.time = "Time is required";
+    if (!formData.doctor) newErrors.doctor = "Doctor selection is required";
+    if (!formData.department)
+      newErrors.department = "Department selection is required";
+    if (!formData.message.trim()) newErrors.message = "Message is required";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  // Update the date input to show day of week
+  const formatDateWithDay = (dateString) => {
+    if (!dateString) return "";
+    const days = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
+    const date = new Date(dateString);
+    const dayName = days[date.getDay()];
+    return `${dateString} (${dayName})`;
+  };
+
+  // Add this function to check if selected date is Sunday
+  const isSunday = (dateString) => {
+    const date = new Date(dateString);
+    return date.getDay() === 0; // 0 represents Sunday
+  };
+
+  // Modify the handleChange function
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => {
+      const newFormData = {
+        ...prev,
+        [name]: value,
+      };
+
+      // If date is changed and it's Sunday, clear the time field
+      if (name === "date" && isSunday(value)) {
+        newFormData.time = "Closed";
+      } else if (name === "date" && prev.time === "Closed") {
+        // If changing from Sunday to another day, reset time
+        newFormData.time = "";
+      }
+
+      return newFormData;
+    });
+    // Clear error when user types
+    if (errors[name]) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: "",
+      }));
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!localStorage.getItem("token")) {
+      toast.error("Please login to book an appointment");
+      navigate("/login");
+      return;
+    }
+
+    // Check if selected date is Sunday
+    if (isSunday(formData.date)) {
+      toast.error("Booking Closed on Sunday");
+      return;
+    }
+
+    // Continue with form validation and submission if not Sunday
+    if (validateForm()) {
+      setLoading(true);
+      try {
+        const response = await fetch(
+          `${apiUrl}/api/appointment/book-appointments`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "auth-token": localStorage.getItem("token"),
+            },
+            body: JSON.stringify(formData),
+          }
+        );
+
+        const data = await response.json();
+
+        if (data.success) {
+          toast.success("Appointment booked successfully!");
+          setFormData({
+            name: "",
+            email: "",
+            phone: "",
+            gender: "",
+            date: "",
+            time: "",
+            doctor: "",
+            department: "",
+            message: "",
+          });
+        } else {
+          toast.error(data.message || "Failed to book appointment");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        toast.error("An unexpected error occurred");
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      toast.error("Please fix the errors in the form");
+    }
+  };
+
   return (
     <div>
       <div
@@ -83,27 +262,36 @@ const Appointment = () => {
             </div>
             {/* first column second row */}
             <div className="bg-[#1F2B6C] rounded-lg overflow-hidden mt-8">
-              <form className="flex flex-col">
+              <form onSubmit={handleSubmit} className="flex flex-col">
                 {/* name and gender  */}
                 <div className="flex flex-col sm:flex-row ">
                   <div className="w-full sm:w-1/2 ">
                     <input
                       type="text"
                       name="name"
+                      value={formData.name}
+                      onChange={handleChange}
                       placeholder="Name"
-                      className="w-full p-4 text-white placeholder-white/80 bg-transparent
-                        focus:outline-none focus:bg-white/5 transition-colors
-                        border-b-[1px] border-white/60 sm:border-r-[1px] sm:border-white/60
-                        text-sm sm:text-base"
+                      className={`w-full p-4 text-white placeholder-white/80 bg-transparent
+                focus:outline-none focus:bg-white/5 transition-colors
+                border-b-[1px] border-white/60 sm:border-r-[1px] sm:border-white/60
+                text-sm sm:text-base ${errors.name ? "border-red-500" : ""}`}
                     />
+                    {errors.name && (
+                      <div className="text-red-500 text-xs px-4">
+                        {errors.name}
+                      </div>
+                    )}
                   </div>
                   <div className="relative w-full sm:w-1/2">
                     <select
                       name="gender"
-                      className="w-full p-4 text-white placeholder-white/80 bg-transparent
-                        focus:outline-none focus:bg-white/5 transition-colors
-                        border-b-[1px] border-white/60 appearance-none cursor-pointer
-                        text-sm sm:text-base"
+                      value={formData.gender}
+                      onChange={handleChange}
+                      className={`w-full p-4 text-white placeholder-white/80 bg-transparent
+      focus:outline-none focus:bg-white/5 transition-colors
+      border-b-[1px] border-white/60 appearance-none cursor-pointer
+      text-sm sm:text-base ${errors.gender ? "border-red-500" : ""}`}
                     >
                       <option
                         value=""
@@ -119,10 +307,15 @@ const Appointment = () => {
                       <option value="female" className="text-[#1F2B6C]">
                         Female
                       </option>
-                      <option value="other" className="text-[#1F2B6C]">
-                        Other
+                      <option value="others" className="text-[#1F2B6C]">
+                        Others
                       </option>
                     </select>
+                    {errors.gender && (
+                      <div className="text-red-500 text-xs px-4">
+                        {errors.gender}
+                      </div>
+                    )}
                     <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-white">
                       <IoIosArrowDown size={20} />
                     </div>
@@ -135,23 +328,37 @@ const Appointment = () => {
                     <input
                       type="email"
                       name="email"
+                      value={formData.email}
+                      onChange={handleChange}
                       placeholder="Email"
                       className="w-full p-4 text-white placeholder-white/80 bg-transparent
                         focus:outline-none focus:bg-white/5 transition-colors
                         border-b-[1px] border-white/60 sm:border-r-[1px] sm:border-white/60
                         text-sm sm:text-base"
                     />
+                    {errors.email && (
+                      <div className="text-red-500 text-xs px-4">
+                        {errors.email}
+                      </div>
+                    )}
                   </div>
                   <div className="w-full sm:w-1/2">
                     <input
                       type="number"
-                      name="Phone"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleChange}
                       placeholder="Phone"
                       className="w-full p-4 text-white placeholder-white/80 bg-transparent
                         focus:outline-none focus:bg-white/5 transition-colors
                         border-b-[1px] border-white/60
                         text-sm sm:text-base"
                     />
+                    {errors.phone && (
+                      <div className="text-red-500 text-xs px-4">
+                        {errors.phone}
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -161,30 +368,70 @@ const Appointment = () => {
                     <input
                       type="text"
                       name="date"
+                      value={formData.date}
+                      onChange={handleChange}
                       placeholder="Date"
+                      min={new Date().toISOString().split("T")[0]}
                       onFocus={(e) => (e.target.type = "date")}
-                      onBlur={(e) => (e.target.type = "text")}
-                      className="w-full p-4 text-white placeholder-white/80 bg-transparent
-                        focus:outline-none focus:bg-white/5 transition-colors
-                        border-b-[1px] border-white/60 sm:border-r-[1px] sm:border-white/60
-                        text-sm sm:text-base appearance-none cursor-pointer"
+                      onBlur={(e) => (e.target.type = "date")}
+                      className={`w-full p-4 text-white placeholder-white/80 bg-transparent
+                     focus:outline-none focus:bg-white/5 transition-colors
+                      border-b-[1px] border-white/60 sm:border-r-[1px] sm:border-white/60
+                      text-sm sm:text-base appearance-none cursor-pointer
+                      ${errors.date ? "border-red-500" : ""}`}
                     />
+                    {formData.date && (
+                      <div className="text-white text-xs px-4 mt-1">
+                        {formatDateWithDay(formData.date)}
+                      </div>
+                    )}
+                    {errors.date && (
+                      <div className="text-red-500 text-xs px-4">
+                        {errors.date}
+                      </div>
+                    )}
                     <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-white">
                       <IoIosArrowDown size={20} />
                     </div>
                   </div>
                   <div className="relative w-full sm:w-1/2">
-                    <input
-                      type="text"
+                    <select
                       name="time"
-                      placeholder="Time"
-                      onFocus={(e) => (e.target.type = "time")}
-                      onBlur={(e) => (e.target.type = "text")}
-                      className="w-full p-4 text-white placeholder-white/80 bg-transparent
-                        focus:outline-none focus:bg-white/5 transition-colors
-                        border-b-[1px] border-white/60
-                        text-sm sm:text-base appearance-none cursor-pointer"
-                    />
+                      value={formData.time}
+                      onChange={handleChange}
+                      disabled={isSunday(formData.date)}
+                      className={`w-full p-4 text-white placeholder-white/80 bg-transparent
+                                  focus:outline-none focus:bg-white/5 transition-colors
+                                  border-b-[1px] border-white/60 appearance-none cursor-pointer
+                                  text-sm sm:text-base ${
+                                    errors.time ? "border-red-500" : ""
+                                  }`}
+                    >
+                      <option value="" disabled className="text-[#1F2B6C]">
+                        Time
+                      </option>
+                      {isSunday(formData.date) ? (
+                        <option value="Closed" className="text-[#1F2B6C]">
+                          Closed (Sunday)
+                        </option>
+                      ) : (
+                        timeSlots.map((slot) => (
+                          <option
+                            key={slot}
+                            value={slot}
+                            className="text-[#1F2B6C]"
+                          >
+                            {slot}
+                          </option>
+                        ))
+                      )}
+                    </select>
+
+                    {errors.time && (
+                      <div className="text-red-500 text-xs px-4">
+                        {errors.time}
+                      </div>
+                    )}
                     <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-white">
                       <IoIosArrowDown size={20} />
                     </div>
@@ -196,18 +443,19 @@ const Appointment = () => {
                   <div className="relative w-full sm:w-1/2">
                     <select
                       name="doctor"
-                      className="w-full p-4 text-white placeholder-white/80 bg-transparent
-                        focus:outline-none focus:bg-white/5 transition-colors
-                        border-b-[1px] border-white/60 sm:border-r-[1px] sm:border-white/60
-                        text-sm sm:text-base appearance-none cursor-pointer"
+                      value={formData.doctor}
+                      onChange={handleChange}
+                      className={`w-full p-4 text-white placeholder-white/80 bg-transparent
+                              focus:outline-none focus:bg-white/5 transition-colors
+                              border-b-[1px] border-white/60 sm:border-r-[1px] sm:border-white/60
+                              text-sm sm:text-base appearance-none cursor-pointer
+                                                         ${
+                                                           errors.doctor
+                                                             ? "border-red-500"
+                                                             : ""
+                                                         }`}
                     >
-                      <option
-                        value=""
-                        disabled
-                        selected
-                        className="text-[#1F2B6C]"
-                      >
-                        {" "}
+                      <option value="" disabled className="text-[#1F2B6C]">
                         Doctor
                       </option>
                       {[...Array(10)].map((_, i) => (
@@ -220,6 +468,11 @@ const Appointment = () => {
                         </option>
                       ))}
                     </select>
+                    {errors.doctor && (
+                      <div className="text-red-500 text-xs px-4">
+                        {errors.doctor}
+                      </div>
+                    )}
                     <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-white">
                       <IoIosArrowDown size={20} />
                     </div>
@@ -227,43 +480,52 @@ const Appointment = () => {
                   <div className="relative w-full sm:w-1/2">
                     <select
                       name="department"
-                      className="w-full p-4 text-white placeholder-white/80 bg-transparent
-                        focus:outline-none focus:bg-white/5 transition-colors
-                        border-b-[1px] border-white/60
-                        text-sm sm:text-base appearance-none cursor-pointer"
+                      value={formData.department}
+                      onChange={handleChange}
+                      className={`w-full p-4 text-white placeholder-white/80 bg-transparent
+                                 focus:outline-none focus:bg-white/5 transition-colors
+                                 border-b-[1px] border-white/60
+                                 text-sm sm:text-base appearance-none cursor-pointer
+                                 ${errors.department ? "border-red-500" : ""}`}
                     >
-                      <option
-                        value=""
-                        disabled
-                        selected
-                        className="text-[#1F2B6C]"
-                      >
-                        {" "}
+                      <option value="" disabled className="text-[#1F2B6C]">
                         Department
                       </option>
+
                       {[
-                        "Neurology",
-                        "Bones",
-                        "Oncology",
-                        "Otorhinolaryngology",
-                        "Dermatology",
-                        "Ophthalmology",
-                        "Cardiovascular",
-                        "Pulmonology",
-                        "Renal Medicine",
-                        "Gastroenterology",
-                        "Urology",
-                        "Gynaelogy",
+                        { label: "Neurology", value: "Neurology" },
+                        { label: "Bones", value: "Bones" },
+                        { label: "Oncology", value: "Oncology" },
+                        {
+                          label: "Otorhinolaryngology",
+                          value: "Otorhinolaryngology",
+                        },
+                        { label: "Dermatology", value: "Dermatology" },
+                        { label: "Ophthalmology", value: "Ophthalmology" },
+                        { label: "Cardiovascular", value: "Cardiovascular" },
+                        { label: "Pulmonology", value: "Pulmonology" },
+                        { label: "Renal Medicine", value: "Renal Medicine" },
+                        {
+                          label: "Gastroenterology",
+                          value: "Gastroenterology",
+                        },
+                        { label: "Urology", value: "Urology" },
+                        { label: "Gynaelogy", value: "Gynaelogy" },
                       ].map((dept) => (
                         <option
-                          key={dept}
-                          value={dept.toLowerCase()}
+                          key={dept.value}
+                          value={dept.value}
                           className="text-[#1F2B6C]"
                         >
-                          {dept}
+                          {dept.label}
                         </option>
                       ))}
                     </select>
+                    {errors.department && (
+                      <div className="text-red-500 text-xs px-4">
+                        {errors.department}
+                      </div>
+                    )}
                     <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-white">
                       <IoIosArrowDown size={20} />
                     </div>
@@ -273,22 +535,43 @@ const Appointment = () => {
                 {/* Message */}
                 <textarea
                   name="message"
+                  value={formData.message}
+                  onChange={handleChange}
                   placeholder="Message"
-                  className="w-full p-4  text-white placeholder-white/80 bg-transparent
-                    focus:outline-none focus:bg-white/5 transition-colors
-                    text-sm sm:text-base resize-none
-                    h-[150px] sm:h-[200px] lg:h-[170px]"
+                  className={`w-full p-4 text-white placeholder-white/80 bg-transparent
+                               focus:outline-none focus:bg-white/5 transition-colors
+                               text-sm sm:text-base resize-none
+                               h-[150px] sm:h-[200px] lg:h-[170px]
+                               ${
+                                 errors.message
+                                   ? "border-red-500"
+                                   : "border-white/60"
+                               }`}
                 ></textarea>
+                {errors.message && (
+                  <div className="text-red-500 text-xs px-4">
+                    {errors.message}
+                  </div>
+                )}
 
                 {/* Submit Button */}
-                <div className="bg-[#BFD2F8] p-2 sm:p-3 ">
+                <div className="bg-[#BFD2F8] p-2 sm:p-3">
                   <button
                     type="submit"
+                    disabled={loading}
                     className="w-full text-[#1F2B6C] 
-      font-semibold  transition-all
-      text-sm sm:text-base cursor-pointer uppercase tracking-wide "
+                                 font-semibold transition-all
+                                 text-sm sm:text-base cursor-pointer uppercase tracking-wide
+                                 disabled:opacity-50 "
                   >
-                    Submit
+                    {loading ? (
+                      <div className="flex items-center justify-center">
+                        <div className="animate-spin rounded-full h-5 w-5 border-2 border-[#1F2B6C] border-t-transparent"></div>
+                        <span className="ml-2">Booking...</span>
+                      </div>
+                    ) : (
+                      "Submit"
+                    )}
                   </button>
                 </div>
               </form>

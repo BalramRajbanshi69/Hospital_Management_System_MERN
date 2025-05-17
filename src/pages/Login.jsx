@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast } from "react-toastify";
-import Login from "../../src/assets/login.jpg";
+import LoginPic from "../../src/assets/login.jpg";
 
 const Login = () => {
   const apiUrl = import.meta.env.VITE_REACT_API_URL;
@@ -18,7 +18,7 @@ const Login = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setCredentials({ ...credentials, [name]: value });
-    
+
     // Clear errors when user types
     if (errors[name]) {
       setErrors({ ...errors, [name]: "" });
@@ -27,7 +27,7 @@ const Login = () => {
 
   const validateForm = () => {
     const newErrors = {};
-    
+
     if (!credentials.email) {
       newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(credentials.email)) {
@@ -82,11 +82,14 @@ const Login = () => {
         <div className="md:flex">
           {/* Left side - Image */}
           <div className="md:w-1/2 relative h-64 md:h-auto">
-            <img
-              src={Login}
-              alt="Login"
-              className="w-full h-full object-cover"
-            />
+            <div
+              className="w-full h-full 
+                                           bg-cover bg-center bg-no-repeat relative overflow-hidden"
+              style={{
+                backgroundImage: `url(${LoginPic})`,
+                
+              }}
+            ></div>
             <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-60"></div>
             <div className="absolute bottom-4 left-4 text-white">
               <h2 className="text-xl font-bold mb-2">Welcome Back!</h2>

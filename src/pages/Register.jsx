@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast } from "react-toastify";
+import Registration from "../../src/assets/registration.jpg";
 
 const Register = () => {
   const apiUrl = import.meta.env.VITE_REACT_API_URL;
@@ -29,7 +30,7 @@ const Register = () => {
 
   const validateForm = () => {
     const newErrors = {};
-    
+
     if (!credentials.name.trim()) {
       newErrors.name = "Name is required";
     } else if (credentials.name.trim().length < 2) {
@@ -100,11 +101,14 @@ const Register = () => {
         <div className="md:flex">
           {/* Left side - Image */}
           <div className="md:w-1/2 relative h-64 md:h-auto">
-            <img
-              src="/src/assets/registration.jpg"
-              alt="Register"
-              className="w-full h-full object-cover"
-            />
+            <div
+              className="w-full h-full 
+                                                       bg-cover bg-center bg-no-repeat relative overflow-hidden"
+              style={{
+                backgroundImage: `url(${Registration})`,
+                
+              }}
+            ></div>
             <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-60"></div>
             <div className="absolute bottom-4 left-4 text-white">
               <h2 className="text-xl font-bold mb-2">Create Account</h2>
@@ -115,7 +119,9 @@ const Register = () => {
           {/* Right side - Form */}
           <div className="md:w-1/2 p-8">
             <div className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-800 mb-1">Register</h2>
+              <h2 className="text-2xl font-bold text-gray-800 mb-1">
+                Register
+              </h2>
               <div className="h-1 w-16 bg-[#1F2B6C] rounded-full"></div>
             </div>
 
@@ -214,7 +220,9 @@ const Register = () => {
                   </button>
                 </div>
                 {errors.cpassword && (
-                  <p className="text-red-500 text-xs mt-1">{errors.cpassword}</p>
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.cpassword}
+                  </p>
                 )}
               </div>
 
