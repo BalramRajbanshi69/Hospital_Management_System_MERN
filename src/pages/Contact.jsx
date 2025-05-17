@@ -7,8 +7,99 @@ import { MdOutlineMail, MdOutlineRemoveRedEye } from "react-icons/md";
 import { IoLogoInstagram } from "react-icons/io5";
 import { TiSocialFacebook, TiSocialLinkedin } from "react-icons/ti";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import { toast } from "react-toastify";
 
 const Contact = () => {
+
+  const apiUrl = import.meta.env.VITE_REACT_API_URL;
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: ""
+  });
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+
+   // Add validation function
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.name.trim()) {
+      newErrors.name = "Name is required";
+    }
+    if (!formData.email) {
+      newErrors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Email is invalid";
+    }
+    if (!formData.subject.trim()) {
+      newErrors.subject = "Subject is required";
+    }
+    if (!formData.message.trim()) {
+      newErrors.message = "Message is required";
+    } else if (formData.message.length < 10) {
+      newErrors.message = "Message must be at least 10 characters";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+   // Add handleChange function
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    // Clear error when user types
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ""
+      }));
+    }
+  };
+
+
+   // Add handleSubmit function
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (validateForm()) {
+      setLoading(true);
+      try {
+        const response = await fetch(`${apiUrl}/api/contact`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(formData)
+        });
+         const data = await response.json();
+
+        if (response.ok) {
+          toast.success("Message sent successfully!");
+          setFormData({
+            name: "",
+            email: "",
+            subject: "",
+            message: ""
+          });
+        } else {
+          toast.error(data.message || "Failed to send message");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        toast.error("An unexpected error occurred");
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      toast.error("Please fix the errors in the form");
+    }
+  };
+
   return (
     <div>
       {/* Heading part Contact us */}
@@ -88,26 +179,30 @@ const Contact = () => {
       
             {/* Form */}
             <div className="bg-[#1F2B6C] rounded-lg overflow-hidden">
-              <form action="" className="flex flex-col">
+              <form onSubmit={handleSubmit} className="flex flex-col">
                 {/* Name and Email */}
                 <div className="flex flex-col sm:flex-row">
                   <input
                     type="text"
                     name="name"
+                    value={formData.name}
+                    onChange={handleChange}
                     placeholder="Name"
-                    className="w-full p-4 text-white placeholder-white/80 bg-transparent
-                      focus:outline-none focus:bg-white/5 transition-colors
-                      border-b border-white/30 sm:border-r sm:border-white/30
-                      text-sm sm:text-base"
+                    className={`w-full p-4 text-white placeholder-white/80 bg-transparent
+          focus:outline-none focus:bg-white/5 transition-colors
+          border-b border-white/30 sm:border-r sm:border-white/30
+          text-sm sm:text-base ${errors.name ? 'border-red-500' : ''}`}
                   />
                   <input
                     type="email"
                     name="email"
+                    value={formData.email}
+                    onChange={handleChange}
                     placeholder="Email"
-                    className="w-full p-4 text-white placeholder-white/80 bg-transparent
-                      focus:outline-none focus:bg-white/5 transition-colors
-                      border-b border-white/30
-                      text-sm sm:text-base"
+                          className={`w-full p-4 text-white placeholder-white/80 bg-transparent
+          focus:outline-none focus:bg-white/5 transition-colors
+          border-b border-white/30
+          text-sm sm:text-base ${errors.email ? 'border-red-500' : ''}`}
                   />
                 </div>
       
@@ -115,21 +210,25 @@ const Contact = () => {
                 <input
                   type="text"
                   name="subject"
+                  value={formData.subject}
+                  onChange={handleChange}
                   placeholder="Subject"
-                  className="w-full p-4 text-white placeholder-white/80 bg-transparent
-                    focus:outline-none focus:bg-white/5 transition-colors
-                    border-b border-white/30
-                    text-sm sm:text-base"
+                        className={`w-full p-4 text-white placeholder-white/80 bg-transparent
+        focus:outline-none focus:bg-white/5 transition-colors
+        border-b border-white/30
+        text-sm sm:text-base ${errors.subject ? 'border-red-500' : ''}`}
                 />
       
                 {/* Message */}
                 <textarea
                   name="message"
+                  value={formData.message}
+                  onChange={handleChange}
                   placeholder="Message"
-                  className="w-full p-4 text-white placeholder-white/80 bg-transparent
-                    focus:outline-none focus:bg-white/5 transition-colors
-                    text-sm sm:text-base resize-none
-                    h-[150px] sm:h-[200px] lg:h-[235px]"
+                      className={`w-full p-4 text-white placeholder-white/80 bg-transparent
+        focus:outline-none focus:bg-white/5 transition-colors
+        text-sm sm:text-base resize-none
+        h-[150px] sm:h-[200px] lg:h-[235px] ${errors.message ? 'border-red-500' : ''}`}
                 ></textarea>
       
                 {/* Submit Button */}
@@ -138,9 +237,9 @@ const Contact = () => {
                     type="submit"
                     className="w-full h-[40px] sm:h-[44px] text-[#1F2B6C] 
                       font-medium hover:font-semibold transition-all
-                      text-sm sm:text-base cursor-pointer"
+                      text-sm sm:text-base cursor-pointer disabled:opacity-50"
                   >
-                    SUBMIT
+                    {loading ? "SENDING..." : "SUBMIT"}
                   </button>
                 </div>
               </form>

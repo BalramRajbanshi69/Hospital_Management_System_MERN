@@ -8,7 +8,7 @@ import Doctor1 from "../../src/assets/doctor1.jpg";
 import Doctor2 from "../../src/assets/doctor2.jpg";
 import Doctor3 from "../../src/assets/doctor3.jpg";
 import News from "../../src/assets/news.jpg";
-import {  Link } from "react-router-dom";
+import {  Link} from "react-router-dom";
 import { FaCalendarAlt, FaUsers } from "react-icons/fa";
 import { GiBanknote } from "react-icons/gi";
 import { FaArrowRight, FaHeartbeat, FaDna } from "react-icons/fa";
@@ -60,7 +60,7 @@ const Home = () => {
       </div> 
 
       {/* book appointment */}
-        <div className="absolute top-195  w-full h-full  mx-4  sm:mx-6 lg:mx-24 md:mx-12 xl:mx-48 px-5">
+        {/* <div className="absolute top-195  w-full h-full  mx-4  sm:mx-6 lg:mx-24 md:mx-12 xl:mx-48 px-5">
         <div className="flex  justify-start gap-4 sm:gap-6 md:gap-8 flex-wrap ">
           <div className="flex justify-between gap-6 mt-10">
             <div className="bg-[#1F2B6C] text-white rounded-md p-5  flex  items-center justify-between  shadow-lg  w-[350px]   gap-6">
@@ -83,7 +83,7 @@ const Home = () => {
             </div>
           </div>
         </div>
-      </div>  
+      </div>   */}
 
       {/* second part welcome to meddical */}
        <div className=" mx-4  sm:mx-6 lg:mx-24 md:mx-12 xl:mx-48 px-5">
@@ -107,7 +107,7 @@ const Home = () => {
             className="inline-flex items-center space-x-2 text-[#159EEC] mb-12 "
           >
             <span className="text-base sm:text-md font-regular tracking-wider">
-              Learn More
+              Learn More 
             </span>
             <FaArrowRight className="w-4 h-4 text-[#1F2B6C] mt-0.5" />
           </Link>

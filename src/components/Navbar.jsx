@@ -70,7 +70,18 @@ const Navbar = () => {
                 >
                   Contact
                 </NavLink>
+                </li>
+                <li>
+                <NavLink 
+                  to="/login" 
+                  className={({ isActive }) => 
+                    isActive ? "font-semibold text-[#BFD2F8] transition-colors" : "transition-colors hover:text-white"
+                  }
+                >
+                  Login
+                </NavLink>
               </li>
+              
             </ul>
 
            <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-3 mt-6 sm:mt-0"> 

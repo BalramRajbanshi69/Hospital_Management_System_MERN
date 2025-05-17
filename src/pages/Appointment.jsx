@@ -119,8 +119,8 @@ const Appointment = () => {
                       <option value="female" className="text-[#1F2B6C]">
                         Female
                       </option>
-                      <option value="others" className="text-[#1F2B6C]">
-                        Others
+                      <option value="other" className="text-[#1F2B6C]">
+                        Other
                       </option>
                     </select>
                     <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-white">
@@ -145,8 +145,8 @@ const Appointment = () => {
                   <div className="w-full sm:w-1/2">
                     <input
                       type="number"
-                      name="Number"
-                      placeholder="Number"
+                      name="Phone"
+                      placeholder="Phone"
                       className="w-full p-4 text-white placeholder-white/80 bg-transparent
                         focus:outline-none focus:bg-white/5 transition-colors
                         border-b-[1px] border-white/60

@@ -11,14 +11,18 @@ import Contact from './pages/Contact'
 import Appointment from './pages/Appointment'
 import HealthCare from './pages/HealthCare'
 import SingleService from './pages/SingleService'
+import Login from './pages/Login'
+import Register from './pages/Register'
+import Toast from './components/Toast'
 
 
 const App = () => {
   return (
     <div> 
-      <Header/>
       <Router>
+      <Header/>
       <Navbar/>
+      <Toast/>
       
         <Routes>
           <Route path="/" element={<Home />} />
@@ -31,6 +35,8 @@ const App = () => {
           <Route path="/news/healthcare" element={<HealthCare />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/appointment" element={<Appointment />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
         </Routes>
       </Router>
      </div>
