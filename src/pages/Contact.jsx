@@ -69,6 +69,8 @@ const Contact = () => {
     if (validateForm()) {
       setLoading(true);
       try {
+        console.log("API url", apiUrl);
+        
         const response = await fetch(`${apiUrl}/api/contact`, {
           method: "POST",
           headers: {

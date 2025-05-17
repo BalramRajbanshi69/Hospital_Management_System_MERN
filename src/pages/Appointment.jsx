@@ -52,8 +52,8 @@ const Appointment = () => {
 
     if (!formData.email) {
       newErrors.email = "Email is required";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Email is invalid";
+    }else if (!/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.(com)$/.test(formData.email)) {
+    newErrors.email = "Please enter a valid email address with .com domain";
     }
 
     // Phone validation - must start with 98 and be 10 digits
