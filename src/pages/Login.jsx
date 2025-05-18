@@ -49,6 +49,7 @@ const Login = () => {
     if (validateForm()) {
       setLoading(true);
       try {
+
         const response = await fetch(`${apiUrl}/api/auth/loginuser`, {
           method: "POST",
           headers: {

@@ -52,8 +52,10 @@ const Appointment = () => {
 
     if (!formData.email) {
       newErrors.email = "Email is required";
-    }else if (!/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.(com)$/.test(formData.email)) {
-    newErrors.email = "Please enter a valid email address with .com domain";
+    } else if (
+      !/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.(com)$/.test(formData.email)
+    ) {
+      newErrors.email = "Please enter a valid email address with .com domain";
     }
 
     // Phone validation - must start with 98 and be 10 digits
@@ -441,33 +443,72 @@ const Appointment = () => {
                 {/* Doctor and Department */}
                 <div className="flex flex-col sm:flex-row">
                   <div className="relative w-full sm:w-1/2">
-                    <select
+                    {/* <select
                       name="doctor"
                       value={formData.doctor}
                       onChange={handleChange}
                       className={`w-full p-4 text-white placeholder-white/80 bg-transparent
-                              focus:outline-none focus:bg-white/5 transition-colors
-                              border-b-[1px] border-white/60 sm:border-r-[1px] sm:border-white/60
-                              text-sm sm:text-base appearance-none cursor-pointer
-                                                         ${
-                                                           errors.doctor
-                                                             ? "border-red-500"
-                                                             : ""
-                                                         }`}
+                                  focus:outline-none focus:bg-white/5 transition-colors
+                                  border-b-[1px] border-white/60 sm:border-r-[1px] sm:border-white/60
+                                  text-sm sm:text-base appearance-none cursor-pointer
+                                  ${errors.doctor ? "border-red-500" : ""}`}
                     >
                       <option value="" disabled className="text-[#1F2B6C]">
                         Doctor
                       </option>
-                      {[...Array(10)].map((_, i) => (
+                      {[
+                        "Dr. Sarah Johnson",
+                        "Dr. James Wilson",
+                        "Dr. Emily Williams",
+                        "Dr. Michael Chen",
+                        "Dr. Lisa Anderson",
+                        "Dr. Robert Taylor",
+                        "Dr. Maria Garcia",
+                        "Dr. David Kim",
+                        "Dr. Jennifer Lee",
+                        "Dr. Thomas Brown",
+                      ].map((doctor) => (
                         <option
-                          key={i}
-                          value={`doctor${i + 1}`}
+                          key={doctor}
+                          value={doctor}
                           className="text-[#1F2B6C]"
                         >
-                          Doctor {i + 1}
+                          {doctor}
+                        </option>
+                      ))}
+                    </select> */}
+
+                                        <select
+                      name="doctor"
+                      value={formData.doctor}
+                      onChange={handleChange}
+                      className={`w-full p-4 text-white placeholder-white/80 bg-transparent
+                                  focus:outline-none focus:bg-white/5 transition-colors
+                                  border-b-[1px] border-white/60 sm:border-r-[1px] sm:border-white/60
+                                  text-sm sm:text-base appearance-none cursor-pointer
+                                  ${errors.doctor ? "border-red-500" : ""}`}
+                    >
+                      <option value="" disabled className="text-[#1F2B6C]">
+                        Doctor
+                      </option>
+                      {[
+                        'Dr. Sarah Johnson',
+                        'Dr. James Wilson',
+                        'Dr. Emily Williams',
+                        'Dr. Michael Chen',
+                        'Dr. Lisa Anderson',
+                        'Dr. Robert Taylor',
+                        'Dr. Maria Garcia',
+                        'Dr. David Kim',
+                        'Dr. Jennifer Lee',
+                        'Dr. Thomas Brown'
+                      ].map((doctor) => (
+                        <option key={doctor} value={doctor} className="text-[#1F2B6C]">
+                          {doctor}
                         </option>
                       ))}
                     </select>
+
                     {errors.doctor && (
                       <div className="text-red-500 text-xs px-4">
                         {errors.doctor}

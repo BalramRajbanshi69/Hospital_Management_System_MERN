@@ -17,6 +17,29 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isPasswordFocused, setIsPasswordFocused] = useState(false);
+
+  const validatePassword = (password) => {
+    const minLength = 8;
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumbers = /\d/.test(password);
+    const hasSpecialChars = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+    const requirements = [];
+
+    if (password.length < minLength)
+      requirements.push(`at least ${minLength} characters`);
+    if (!hasUpperCase) requirements.push("an uppercase letter");
+    if (!hasLowerCase) requirements.push("a lowercase letter");
+    if (!hasNumbers) requirements.push("a number");
+    if (!hasSpecialChars) requirements.push("a special character");
+
+    return {
+      isValid: requirements.length === 0,
+      requirements,
+    };
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -45,8 +68,11 @@ const Register = () => {
 
     if (!credentials.password) {
       newErrors.password = "Password is required";
-    } else if (credentials.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters";
+    } else {
+      const { isValid, requirements } = validatePassword(credentials.password);
+      if (!isValid) {
+        newErrors.password = `Password must contain ${requirements.join(", ")}`;
+      }
     }
 
     if (!credentials.cpassword) {
@@ -106,7 +132,6 @@ const Register = () => {
                                                        bg-cover bg-center bg-no-repeat relative overflow-hidden"
               style={{
                 backgroundImage: `url(${Registration})`,
-                
               }}
             ></div>
             <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-60"></div>
@@ -177,6 +202,8 @@ const Register = () => {
                     name="password"
                     value={credentials.password}
                     onChange={handleChange}
+                    onFocus={() => setIsPasswordFocused(true)}
+      onBlur={() => setIsPasswordFocused(false)}
                     className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1F2B6C] transition-all ${
                       errors.password ? "border-red-500" : "border-gray-300"
                     }`}
@@ -190,9 +217,14 @@ const Register = () => {
                     {showPassword ? <FaEyeSlash /> : <FaEye />}
                   </button>
                 </div>
-                {errors.password && (
+                {errors.password ? (
                   <p className="text-red-500 text-xs mt-1">{errors.password}</p>
-                )}
+                ) : isPasswordFocused ?(
+                  <p className="text-gray-500 text-xs mt-1">
+                    Password must be at least 8 characters long and contain
+                    uppercase, lowercase, number and special character
+                  </p>
+                ) : null}
               </div>
 
               {/* Confirm Password Input */}
