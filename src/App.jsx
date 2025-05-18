@@ -22,6 +22,7 @@ const App = () => {
       <Router>
       <Header/>
       <Navbar/>
+     
       <Toast/>
       
         <Routes>
@@ -44,6 +45,9 @@ const App = () => {
 }
 
 export default App
+
+
+
 
 
 

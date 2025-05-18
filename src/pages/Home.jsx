@@ -9,8 +9,6 @@ import Doctor2 from "../../src/assets/doctor2.jpg";
 import Doctor3 from "../../src/assets/doctor3.jpg";
 import News from "../../src/assets/news.jpg";
 import { Link, useNavigate } from "react-router-dom";
-import { FaCalendarAlt, FaUsers } from "react-icons/fa";
-import { GiBanknote } from "react-icons/gi";
 import { FaArrowRight, FaHeartbeat, FaDna } from "react-icons/fa";
 import { TbCheckupList } from "react-icons/tb";
 import { MdOutlineBloodtype } from "react-icons/md";
@@ -208,13 +206,13 @@ const Home = () => {
   return (
     <div>
       {/* first part */}
-      <div
+       <div
         className=" bg-cover  bg-top bg-no-repeat"
         style={{ backgroundImage: `url(${HomeDoctor})` }}
       >
         <div className=" bg-opacity-20 min-h-screen flex items-center justify-center ">
           <div className="container mx-35 ">
-            <div className=" px-4 sm:px-6 lg:px-8 py-8 md:py-16">
+            <div className=" px-4 sm:px-6 lg:px-8 py-8 md:py-16 ">
               <div className="flex flex-col md:flex-row items-center p-6 md:p-10 ">
                 <div className="md:w-1/2 text-center md:text-left mb-8 md:mb-0 md:pr-8">
                   <p className=" font-bold text-sm md:text-base uppercase tracking-widest mb-2 text-[#159EEC]">
@@ -238,7 +236,10 @@ const Home = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> 
+
+            
+      
 
       {/* book appointment */}
       {/* <div className="absolute top-195  w-full h-full  mx-4  sm:mx-6 lg:mx-24 md:mx-12 xl:mx-48 px-5">

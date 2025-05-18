@@ -7,6 +7,7 @@ const Navbar = () => {
   return (
     
     <div>
+      <nav className="sticky top-[85px] z-30 bg-[#1F2B6C]  w-full">
       <div className="bg-[#1F2B6C] p-5  ">
         <div className=" mx-4 sm:mx-6 md:mx-12 lg:mx-24 xl:mx-48">
           <nav className="flex flex-col sm:flex-row justify-between items-center">
@@ -103,11 +104,17 @@ const Navbar = () => {
           </nav>
         </div>
       </div>
+      </nav>
     </div>
   )
 }
 
 export default Navbar
+
+
+
+
+
 
 
 
