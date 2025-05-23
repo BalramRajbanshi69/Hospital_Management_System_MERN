@@ -8,7 +8,7 @@ import { IoLogoInstagram } from "react-icons/io5";
 import { TiSocialFacebook, TiSocialLinkedin } from "react-icons/ti";
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 
 const Contact = () => {
 
@@ -66,6 +66,13 @@ const Contact = () => {
    // Add handleSubmit function
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!localStorage.getItem("token")) {
+      toast.error("Please login to send message");
+      navigate("/login");
+      return;
+    }
+
     if (validateForm()) {
       setLoading(true);
       try {
@@ -74,7 +81,8 @@ const Contact = () => {
         const response = await fetch(`${apiUrl}/api/contact`, {
           method: "POST",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "auth-token": localStorage.getItem("token"),
           },
           body: JSON.stringify(formData)
         });

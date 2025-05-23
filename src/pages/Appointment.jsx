@@ -6,7 +6,7 @@ import { FaClock, FaLocationArrow, FaMapMarkerAlt } from "react-icons/fa";
 import { MdOutlineMail } from "react-icons/md";
 import { TiSocialFacebook, TiSocialLinkedin } from "react-icons/ti";
 import { Link, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 
 const Appointment = () => {
   const apiUrl = import.meta.env.VITE_REACT_API_URL;
