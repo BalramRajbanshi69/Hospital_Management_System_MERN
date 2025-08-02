@@ -63,52 +63,62 @@ const Contact = () => {
   };
 
 
-   // Add handleSubmit function
-  const handleSubmit = async (e) => {
-    e.preventDefault();
 
-    if (!localStorage.getItem("token")) {
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+
+      if (!localStorage.getItem("token")) {
       toast.error("Please login to send message");
       navigate("/login");
       return;
     }
 
-    if (validateForm()) {
-      setLoading(true);
-      try {
-        console.log("API url", apiUrl);
-        
-        const response = await fetch(`${apiUrl}/api/contact`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "auth-token": localStorage.getItem("token"),
-          },
-          body: JSON.stringify(formData)
-        });
-         const data = await response.json();
+  if (validateForm()) {
+    setLoading(true);
+    try {
+      const response = await fetch(`${apiUrl}/api/contact`, {
+        method: "POST",
+        headers: {
+        "Content-Type":"application/json",            
+        "Accept":"application/json",
+        "auth-token":`${localStorage.getItem("token")}`
+        },
+        body: JSON.stringify(formData),
+      });
 
-        if (response.ok) {
-          toast.success("Message sent successfully!");
-          setFormData({
-            name: "",
-            email: "",
-            subject: "",
-            message: ""
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success("Message sent successfully!");
+        setFormData({
+          name: "",
+          email: "",
+          subject: "",
+          message: "",
+        });
+        setErrors({}); // Clear any existing errors
+      } else {
+        if (data.errors) {
+          const backendErrors = {};
+          data.errors.forEach((err) => {
+            backendErrors[err.param] = err.msg;
           });
+          setErrors(backendErrors);
+          toast.error("Please fix the errors in the form");
         } else {
           toast.error(data.message || "Failed to send message");
         }
-      } catch (error) {
-        console.error("Error:", error);
-        toast.error("An unexpected error occurred");
-      } finally {
-        setLoading(false);
       }
-    } else {
-      toast.error("Please fix the errors in the form");
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("An unexpected error occurred");
+    } finally {
+      setLoading(false);
     }
-  };
+  } else {
+    toast.error("Please fix the errors in the form");
+  }
+};
 
   return (
     <div>
