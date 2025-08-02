@@ -6,11 +6,12 @@ import { FaClock, FaLocationArrow, FaMapMarkerAlt, FaRegHeart } from "react-icon
 import { MdOutlineMail, MdOutlineRemoveRedEye } from "react-icons/md";
 import { IoLogoInstagram } from "react-icons/io5";
 import { TiSocialFacebook, TiSocialLinkedin } from "react-icons/ti";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
 const Contact = () => {
+  const navigate = useNavigate();
 
   const apiUrl = import.meta.env.VITE_APP_API_URL;
   const [formData, setFormData] = useState({
