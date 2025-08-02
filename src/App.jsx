@@ -16,6 +16,7 @@ import Register from './pages/Register'
 import Toast from './components/Toast'
 import store from './store/store'
 import {Provider} from "react-redux"
+import Profile from './pages/Profile'
 
 
 const App = () => {
@@ -42,6 +43,7 @@ const App = () => {
           <Route path="/appointment" element={<Appointment />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/profile" element={<Profile/>} />
         </Routes>
       </Router>
       </Provider>

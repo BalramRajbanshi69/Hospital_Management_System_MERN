@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { toast } from "react-toastify";
 import Registration from "../../src/assets/registration.jpg";
+import toast from "react-hot-toast";
 
 const Register = () => {
   const apiUrl = import.meta.env.VITE_APP_API_URL;
@@ -110,7 +110,7 @@ const Register = () => {
         } else if (data?.error) {
           toast.error(data.error);
         } else {
-          toast.error("Registration failed. Please try again.");
+          toast.error("User already registered. Try New!");
         }
       } catch (error) {
         console.error("Error:", error);
