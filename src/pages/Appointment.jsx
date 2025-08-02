@@ -8,12 +8,10 @@
   import { Link, useNavigate } from "react-router-dom";
   import toast from "react-hot-toast";
   import { STATUSES } from "../misc/statuses";
-  import {useDispatch, useSelector} from "react-redux"
+  import {useDispatch} from "react-redux"
   import {doctorAppointment} from "../store/doctorAppointmentSlice"
 
   const Appointment = () => {
-    // const apiUrl = import.meta.env.VITE_APP_API_URL;
-    const {status} = useSelector((state)=>state.appointment) 
     const navigate = useNavigate();
     const dispatch = useDispatch()
 

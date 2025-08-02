@@ -20,11 +20,13 @@ import { FaClock, FaMapMarkerAlt } from "react-icons/fa";
 import { MdOutlineMail } from "react-icons/md";
 import { FaLocationArrow } from "react-icons/fa";
 import { IoIosArrowDown } from "react-icons/io";
-import { toast } from "react-toastify";
+import { doctorAppointment } from "../store/doctorAppointmentSlice";
+import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
 
 const Home = () => {
-  const apiUrl = import.meta.env.VITE_APP_API_URL;
   const navigate = useNavigate();
+  const dispatch = useDispatch()
 
   const [formData, setFormData] = useState({
     name: "",
@@ -143,42 +145,90 @@ const Home = () => {
     }
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   if (!localStorage.getItem("token")) {
+  //     toast.error("Please login to book an appointment");
+  //     navigate("/login");
+  //     return;
+  //   }
+
+  //   // Check if selected date is Sunday
+  //   if (isSunday(formData.date)) {
+  //     toast.error("Booking Closed on Sunday");
+  //     return;
+  //   }
+
+  //   // Continue with form validation and submission if not Sunday
+  //   if (validateForm()) {
+  //     setLoading(true);
+  //     try {
+  //       const response = await fetch(
+  //         `${apiUrl}/api/appointment/book-appointments`,
+  //         {
+  //           method: "POST",
+  //           headers: {
+  //             "Content-Type": "application/json",
+  //             "auth-token": localStorage.getItem("token"),
+  //           },
+  //           body: JSON.stringify(formData),
+  //         }
+  //       );
+
+  //       const data = await response.json();
+
+  //       if (data.success) {
+  //         toast.success("Appointment booked successfully!");
+  //         setFormData({
+  //           name: "",
+  //           email: "",
+  //           phone: "",
+  //           gender: "",
+  //           date: "",
+  //           time: "",
+  //           doctor: "",
+  //           department: "",
+  //           message: "",
+  //         });
+  //       } else {
+  //         toast.error(data.message || "Failed to book appointment");
+  //       }
+  //     } catch (error) {
+  //       console.error("Error:", error);
+  //       toast.error("An unexpected error occurred");
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   } else {
+  //     toast.error("Please fix the errors in the form");
+  //   }
+  // };
+
+
   const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!localStorage.getItem("token")) {
-      toast.error("Please login to book an appointment");
-      navigate("/login");
-      return;
-    }
-
-    // Check if selected date is Sunday
-    if (isSunday(formData.date)) {
-      toast.error("Booking Closed on Sunday");
-      return;
-    }
-
-    // Continue with form validation and submission if not Sunday
-    if (validateForm()) {
-      setLoading(true);
-      try {
-        const response = await fetch(
-          `${apiUrl}/api/appointment/book-appointments`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "auth-token": localStorage.getItem("token"),
-            },
-            body: JSON.stringify(formData),
-          }
-        );
-
-        const data = await response.json();
-
-        if (data.success) {
-          toast.success("Appointment booked successfully!");
-          setFormData({
+        e.preventDefault();
+  
+        if (!localStorage.getItem("token")) {
+          toast.error("Please login to book an appointment");
+          navigate("/login");
+          return;
+        }
+  
+        // Check if selected date is Sunday
+        if (isSunday(formData.date)) {
+          toast.error("Booking Closed on Sunday");
+          return;
+        }
+  
+        // Continue with form validation and submission if not Sunday
+        if (validateForm()) {
+            setLoading(true);
+            try {
+                await dispatch(doctorAppointment(formData)) 
+                toast.success("Appointment successful");
+                navigate("/");
+                 setFormData({
             name: "",
             email: "",
             phone: "",
@@ -189,20 +239,16 @@ const Home = () => {
             department: "",
             message: "",
           });
+            } catch (error) {
+                console.error("Error:", error);
+                toast.error(error.message || "Failed to appointment");
+            } finally {
+                setLoading(false);
+            }
         } else {
-          toast.error(data.message || "Failed to book appointment");
+            toast.error("Please fix the errors in the form");
         }
-      } catch (error) {
-        console.error("Error:", error);
-        toast.error("An unexpected error occurred");
-      } finally {
-        setLoading(false);
-      }
-    } else {
-      toast.error("Please fix the errors in the form");
-    }
-  };
-
+      };
   return (
     <div>
       {/* first part */}
