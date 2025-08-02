@@ -23,7 +23,7 @@ import { IoIosArrowDown } from "react-icons/io";
 import { toast } from "react-toastify";
 
 const Home = () => {
-  const apiUrl = import.meta.env.VITE_REACT_API_URL;
+  const apiUrl = import.meta.env.VITE_APP_API_URL;
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({

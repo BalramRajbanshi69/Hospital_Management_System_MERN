@@ -1,9 +1,17 @@
 
 import React from 'react'
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { CiSearch } from "react-icons/ci";
+import toast from 'react-hot-toast';
 
 const Navbar = () => {
+  const navigate = useNavigate()
+  const handleLogout = (e)=>{
+    e.preventDefault();
+    localStorage.removeItem("token");
+    toast.success("Logout successfully")
+    navigate("/login")
+  }
   return (
     
     <div>
@@ -72,7 +80,10 @@ const Navbar = () => {
                   Contact
                 </NavLink>
                 </li>
-                <li>
+                {
+                  localStorage.getItem("token") === "" || localStorage.getItem("token") === undefined ||
+                  localStorage.getItem("token") === null ? 
+                  <li>
                 <NavLink 
                   to="/login" 
                   className={({ isActive }) => 
@@ -82,6 +93,18 @@ const Navbar = () => {
                   Login
                 </NavLink>
               </li>
+             
+              :
+               <li>
+                 <button
+                  onClick={handleLogout}
+                  className="font-semibold text-red-600 cursor-pointer transition-colors hover:text-red-700"
+                  
+                >
+                  Logout
+                </button>
+              </li>
+                }
               
             </ul>
 

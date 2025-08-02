@@ -14,11 +14,15 @@ import SingleService from './pages/SingleService'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Toast from './components/Toast'
+import store from './store/store'
+import {Provider} from "react-redux"
 
 
 const App = () => {
   return (
     <div> 
+      <Provider store={store}>
+
       <Router>
       <Header/>
       <Navbar/>
@@ -40,6 +44,7 @@ const App = () => {
           <Route path="/register" element={<Register />} />
         </Routes>
       </Router>
+      </Provider>
      </div>
   )
 }

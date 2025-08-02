@@ -12,7 +12,7 @@ import toast from "react-hot-toast";
 
 const Contact = () => {
 
-  const apiUrl = import.meta.env.VITE_REACT_API_URL;
+  const apiUrl = import.meta.env.VITE_APP_API_URL;
   const [formData, setFormData] = useState({
     name: "",
     email: "",
